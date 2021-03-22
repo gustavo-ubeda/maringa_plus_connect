@@ -1,5 +1,6 @@
 #https://flask.palletsprojects.com/en/1.1.x/quickstart/
-#https://jtemporal.com/deploy-flask-heroku/
+#https://medium.com/data-hackers/deploy-flask-api-using-heroku-d5c7128481b7
+#https://dashboard.heroku.com/apps
 
 from flask import Flask
 import requests
@@ -11,6 +12,6 @@ def hello_world(id, id2):
     requests.get(envio)
     return envio
 
-if __name__ == '__main__':
-    # Threaded option to enable multiple instances for multiple user access support
-    app.run(threaded=True, port=5000)
+if __name__ == "__main__":
+  debug = True
+  app.run(debug=debug) #app.run(host='0.0.0.0', port=5000, debug=debug)
