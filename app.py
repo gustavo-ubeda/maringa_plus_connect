@@ -1,15 +1,50 @@
-#https://flask.palletsprojects.com/en/1.1.x/quickstart/
-
-from flask import Flask
-import requests
+from flask import Flask, request, jsonify
 app = Flask(__name__)
 
-@app.route('/<string:id>&<string:id2>')
-def hello_world(id, id2):
-    envio = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSffkPZfyY722D8Tit54xgWEMkh2WzIqMLIk8TOY5SZm4ul5Mg/formResponse?usp=pp_url&entry.1803429885='+id+id2+'&submit=Submit'
-    requests.get(envio)
-    return envio
+@app.route('/getmsg/', methods=['GET'])
+def respond():
+    # Retrieve the name from url parameter
+    name = request.args.get("name", None)
 
-if __name__ == "__main__":
-  debug = True
-  app.run(debug=debug) #app.run(host='0.0.0.0', port=5000, debug=debug)
+    # For debugging
+    print(f"got name {name}")
+
+    response = {}
+
+    # Check if user sent a name at all
+    if not name:
+        response["ERROR"] = "no name found, please send a name."
+    # Check if the user entered a number not a name
+    elif str(name).isdigit():
+        response["ERROR"] = "name can't be numeric."
+    # Now the user entered a valid name
+    else:
+        response["MESSAGE"] = f"Welcome {name} to our awesome platform!!"
+
+    # Return the response in json format
+    return jsonify(response)
+
+@app.route('/post/', methods=['POST'])
+def post_something():
+    param = request.form.get('name')
+    print(param)
+    # You can add the test cases you made in the previous function, but in our case here you are just testing the POST functionality
+    if param:
+        return jsonify({
+            "Message": f"Welcome {name} to our awesome platform!!",
+            # Add this option to distinct the POST request
+            "METHOD" : "POST"
+        })
+    else:
+        return jsonify({
+            "ERROR": "no name found, please send a name."
+        })
+
+# A welcome message to test our server
+@app.route('/')
+def index():
+    return "<h1>Welcome to our server !!</h1>"
+
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)
